@@ -58,4 +58,20 @@ public class TrainComponentService : ITrainComponentService {
         await _context.SaveChangesAsync();
         return true;
     }
+    public async Task<IEnumerable<TrainComponent>> SearchAsync(string name, string uniqueNumber) {
+        var query = _context.TrainComponents.AsQueryable();
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(uniqueNumber))
+            throw new ArgumentException("At least one filter (name or uniqueNumber) must be provided.");
+
+        if (!string.IsNullOrWhiteSpace(name))
+            query = query.Where(c => c.Name.Contains(name));
+
+        if (!string.IsNullOrWhiteSpace(uniqueNumber))
+            query = query.Where(c => c.UniqueNumber.Contains(uniqueNumber));
+
+        return await query.ToListAsync();
+    }
+
+
+
 }
