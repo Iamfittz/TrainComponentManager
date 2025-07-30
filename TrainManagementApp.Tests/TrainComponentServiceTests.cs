@@ -11,6 +11,8 @@ namespace TrainManagementApp.Tests {
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
             _context = new AppDbContext(options);
+            _context.Database.EnsureDeleted(); 
+            _context.Database.EnsureCreated();
             _service = new TrainComponentService(_context);
         }
         //  AAA approach
@@ -51,14 +53,13 @@ namespace TrainManagementApp.Tests {
             };
 
             foreach (var item in components) {
-                _context.TrainComponents.Add(new TrainComponent {
+                await _service.CreateAsync(new TrainComponent {
                     Name = item.Key,
                     UniqueNumber = item.Value.UniqueNumber,
-                    CanAssignQuantity = item.Value.CanAssignQuantity
+                    CanAssignQuantity = item.Value.CanAssignQuantity,
+                    QuantityAssignment = item.Value.CanAssignQuantity ? 1 : null
                 });
             }
-            await _context.SaveChangesAsync();
-
             // Act
             var result = await _service.GetAllAsync();
 
@@ -70,14 +71,12 @@ namespace TrainManagementApp.Tests {
         [Fact]
         public async Task GetByIdAsync_ReturnsCorrectComponent() {
             // Arrange
-            var component = new TrainComponent {
+            var component = await _service.CreateAsync(new TrainComponent {
                 Name = "Brake",
                 UniqueNumber = "BRK123",
-                CanAssignQuantity = true
-            };
-            _context.TrainComponents.Add(component);
-            await _context.SaveChangesAsync();
-
+                CanAssignQuantity = true,
+                QuantityAssignment = 5
+            });
             // Act
             var result = await _service.GetByIdAsync(component.Id);
 
@@ -198,7 +197,22 @@ namespace TrainManagementApp.Tests {
             Assert.True(result);
             Assert.Null(fromDb);
         }
+        [Fact]
+        public async Task SearchAsync_ReturnsMatchingComponents() {
+            // Arrange
+            await _service.CreateAsync(new TrainComponent { Name = "Wheel", UniqueNumber = "WHL001", CanAssignQuantity = true, QuantityAssignment = 10 });
+            await _service.CreateAsync(new TrainComponent { Name = "Door", UniqueNumber = "DR002", CanAssignQuantity = false });
 
+            // Act
+            var resultByName = await _service.SearchAsync("Wheel", null);
+            var resultByUnique = await _service.SearchAsync(null, "DR002");
 
+            // Assert
+            Assert.Single(resultByName);
+            Assert.Equal("Wheel", resultByName.First().Name);
+
+            Assert.Single(resultByUnique);
+            Assert.Equal("DR002", resultByUnique.First().UniqueNumber);
+        }
     }
 }
