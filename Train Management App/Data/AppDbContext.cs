@@ -13,6 +13,8 @@ namespace Train_Management_App.Data {
                 entity.ToTable(x => x.HasCheckConstraint("CK_TrainComponent_Quantity",
                     "[CanAssignQuantity] = 0 AND [QuantityAssignment] IS NULL OR " +
                     "[CanAssignQuantity] = 1 AND [QuantityAssignment] > 0"));
+
+                entity.HasIndex(x => x.UniqueNumber).IsUnique(); 
             });
         }
     }
