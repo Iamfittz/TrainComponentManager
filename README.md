@@ -21,7 +21,8 @@
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/iamfitzz/TrainComponentManager.git
+   cd "C:\Users\User\source\repos"
+   git clone https://github.com/iamfitzz/TrainComponentManager.git "TrainComponentManager"
    cd TrainComponentManager
    ```
 
