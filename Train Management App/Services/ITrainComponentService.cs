@@ -8,4 +8,6 @@ public interface ITrainComponentService {
     Task<TrainComponent> CreateAsync(TrainComponent component);
     Task<bool> UpdateAsync(int id, TrainComponent component);
     Task<bool> DeleteAsync(int id);
+    Task<IEnumerable<TrainComponent>> SearchAsync(string name, string uniqueNumber);
+
 }
