@@ -50,4 +50,10 @@ public class TrainComponentsController : ControllerBase {
         var deleted = await _service.DeleteAsync(id);
         return deleted ? NoContent() : NotFound();
     }
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string name, [FromQuery] string uniqueNumber) {
+        var result = await _service.SearchAsync(name, uniqueNumber);
+        return Ok(result);
+    }
+
 }
