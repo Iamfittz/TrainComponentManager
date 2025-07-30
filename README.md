@@ -30,12 +30,12 @@
 
 3. **Apply migrations and create the database**
    ```bash
-   dotnet ef database update
+   dotnet ef database update --project "Train Management App"
    ```
 
 4. **Start the application**
    ```bash
-   dotnet run --project Train_Management_App
+   dotnet run --project "Train Management App"
    ```
 
 ## 🧪 Running Tests
