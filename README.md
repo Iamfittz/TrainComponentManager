@@ -42,7 +42,8 @@
 1. Install Docker Desktop
 2. Build the image
 ```bash
-docker build -t trainmanager
+docker build -t trainmanager .
+
 ```
 3. Run the container
 ```bash
