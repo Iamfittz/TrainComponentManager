@@ -27,6 +27,9 @@ public class TrainComponentsController : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create(TrainComponent component) {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try {
             var created = await _service.CreateAsync(component);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
@@ -37,6 +40,9 @@ public class TrainComponentsController : ControllerBase {
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, TrainComponent component) {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try {
             var updated = await _service.UpdateAsync(id, component);
             return updated ? NoContent() : NotFound();

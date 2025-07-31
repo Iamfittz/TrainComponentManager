@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -49,6 +50,10 @@ public class AuthController : ControllerBase {
 }
 
 public class LoginRequest {
+    [Required]
+    [MinLength(5)]
     public string Username { get; set; } = string.Empty;
+    [Required]
+    [MinLength(5)]
     public string Password { get; set; } = string.Empty;
 }
