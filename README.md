@@ -38,6 +38,18 @@
    ```bash
    dotnet run --project "Train Management App"
    ```
+##  How to Run with Docker (recommended)
+1. Install Docker Desktop
+2. Build the image
+```bash
+docker build -t trainmanager
+```
+3. Run the container
+```bash
+docker run -p 8080:8080 trainmanager
+```
+4. Open Swagger [http://localhost:8080/swagger](http://localhost:8080/swagger)
+
 
 ## 🧪 Running Tests
 
