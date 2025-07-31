@@ -11,7 +11,7 @@ public class RequestLoggingMiddleware {
         var agent = context.Request.Headers["Agent"].ToString();
         var ip = context.Connection.RemoteIpAddress?.ToString();
 
-        Console.WriteLine($"\nReques {method} {path} | Agent: {agent} | IP: {ip} |");
+        Console.WriteLine($"Request {method} {path} | Agent: {agent} | IP: {ip} |");
 
         await _next(context);
     }

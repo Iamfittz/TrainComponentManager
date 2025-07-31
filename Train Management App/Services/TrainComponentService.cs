@@ -69,7 +69,7 @@ public class TrainComponentService : ITrainComponentService {
         if (!string.IsNullOrWhiteSpace(uniqueNumber))
             query = query.Where(c => c.UniqueNumber.Contains(uniqueNumber));
 
-        return await query.ToListAsync();
+        return await query.OrderBy(c => c.Name).ToListAsync();
     }
 
 
