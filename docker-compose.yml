@@ -1,0 +1,30 @@
+﻿services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${SA_PASSWORD}                   
+    volumes:
+      - mssql-data:/var/opt/mssql                  
+
+  api:
+    build:
+      context: .                                   
+      dockerfile: Dockerfile
+    depends_on:
+      mssql:
+        condition: service_started                 
+    environment:
+      ConnectionStrings__DefaultConnection: >
+        Server=mssql;Database=TrainDb;User Id=sa;Password=${SA_PASSWORD};
+        TrustServerCertificate=true;Encrypt=False;
+      JwtSettings__Issuer: TrainAuth
+      JwtSettings__Audience: TrainAuthAudience
+      JwtSettings__SecretKey: ${JWT_SECRET}
+      JwtSettings__ExpiresInMinutes: "60"
+    ports:
+      - "7248:8080"  
+      # Swagger → http://localhost:7248/swagger
+
+volumes:
+  mssql-data:
