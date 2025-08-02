@@ -1,10 +1,11 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Train_Management_App.Data;
 using Train_Management_App.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Train_Management_App.Middlewares;
+       
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ITrainComponentService, TrainComponentService>();
+
+builder.Services.AddMemoryCache();                      // 2) регистрируем IMemoryCache
+builder.Services.Decorate<ITrainComponentService, CachedTrainComponentService>(); // 3) оборачиваем
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -40,6 +44,12 @@ builder.Services.AddAuthentication(options => {
 });
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope()) {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();        
+    InitialData.Seed(db);         
+}
+
 //Middlewares
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) {
     app.UseSwagger();
